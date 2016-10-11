@@ -1,28 +1,40 @@
-FROM centos:latest
+FROM alpine:3.2
 MAINTAINER Paul Braham
-RUN yum update -y && \
-yum install git -y && \
-mkdir /opt/sabnzbd && \
-mkdir /opt/scripts && \
-git clone https://github.com/sabnzbd/sabnzbd.git /opt/sabnzbd/ --depth 1 && \
-yum install epel-release -y && \
-yum install python-pip gcc gcc-c++ python-devel libffi-devel openssl-devel par2cmdline unzip p7zip -y && \
-curl "http://www.rarlab.com/rar/rarlinux-x64-5.3.b4.tar.gz" >  /tmp/rarlinux-x64-5.3.b4.tar.gz && \
-tar -xzvf /tmp/rarlinux-x64-5.3.b4.tar.gz -C /tmp && \
-cp /tmp/rar/unrar /usr/sbin/ && \
-cp /tmp/rar/rar /usr/sbin/ && \
-pip install --upgrade pip && \
-pip install Cheetah support && \
-curl "http://www.golug.it/pub/yenc/yenc-0.3.tar.gz" > /tmp/yenc-0.3.tar.gz && \
-tar -xzvf /tmp/yenc-0.3.tar.gz -C /tmp
 
-WORKDIR /tmp/yenc-0.3
-RUN python setup.py build && \
-python setup.py install
+# Installing software to compile 
+RUN apk add --update gcc autoconf automake git g++ make python-dev openssl-dev libffi-dev
+# Installing  par2cmdline 
+RUN git clone https://github.com/Parchive/par2cmdline /root/par2cmdline
+WORKDIR /root/par2cmdline
+RUN aclocal
+RUN automake --add-missing
+RUN autoconf
+RUN ./configure
+RUN make
+RUN make install
+# Installing other sabnzbd dependencies 
+RUN apk add unrar unzip p7zip python openssl libffi
+# Installing python dependencies 
+WORKDIR /root
+RUN curl https://bootstrap.pypa.io/get-pip.py > /root/pip.py
+RUN python /root/pip.py
+RUN pip install cheetah
+RUN pip install configobj
+RUN pip install feedparser
+RUN pip install pyOpenSSL
+# -- Installing python-yenc 
+RUN curl http://www.golug.it/pub/yenc/yenc-0.3.tar.gz > /root/yenc-0.3.tar.gz
+RUN tar -xvzf yenc-0.3.tar.gz
+WORKDIR /root/yenc-0.3
+RUN python setup.py build
+RUN python setup.py install
+
 
 EXPOSE 8080
 
 VOLUME ["/opt/config","/opt/downloads","/opt/scripts"]
 
-ENTRYPOINT python /opt/sabnzbd/SABnzbd.py -b 0 -f /opt/config -s 0.0.0.0:8080
+ENV HOME /opt/config
+
+ENTRYPOINT python /opt/sabnzbd/SABnzbd.py -b 0 -s 0.0.0.0:8080
 
