@@ -6,7 +6,7 @@ mkdir /opt/sabnzbd && \
 mkdir /opt/scripts && \
 git clone https://github.com/sabnzbd/sabnzbd.git /opt/sabnzbd/ --depth 1 && \
 yum install epel-release -y && \
-yum install python-pip gcc gcc-c++ python-devel libffi-devel openssl-devel par2cmdline wget -y && \
+yum install python-pip gcc gcc-c++ python-devel libffi-devel openssl-devel par2cmdline wget unzip python-yenc -y && \
 wget "http://www.rarlab.com/rar/rarlinux-x64-5.3.b4.tar.gz"  -P /tmp && \
 tar -xzvf /tmp/rarlinux-x64-5.3.b4.tar.gz -C /tmp && \
 cp /tmp/rar/unrar /usr/sbin/ && \
