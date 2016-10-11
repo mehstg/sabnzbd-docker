@@ -3,9 +3,8 @@ MAINTAINER Paul Braham
 RUN yum update -y && \
 yum install git -y && \
 mkdir /opt/sabnzbd && \
-mkdir /opt/sabnzbd/scripts && \
+mkdir /opt/scripts && \
 git clone https://github.com/sabnzbd/sabnzbd.git /opt/sabnzbd/ --depth 1 && \
-git clone https://github.com/midgetspy/Sick-Beard/tree/development/autoProcessTV/ --depth 1 && \
 yum install epel-release -y && \
 yum install python-pip gcc gcc-c++ python-devel libffi-devel openssl-devel par2cmdline wget -y && \
 wget "http://www.rarlab.com/rar/rarlinux-x64-5.3.b4.tar.gz"  -P /tmp && \
@@ -17,7 +16,7 @@ pip install Cheetah support
 
 EXPOSE 8080
 
-VOLUME ["/opt/config","/opt/downloads"]
+VOLUME ["/opt/config","/opt/downloads","/opt/scripts"]
 
 ENTRYPOINT python /opt/sabnzbd/SABnzbd.py -b 0 -f /opt/config -s 0.0.0.0:8080
 
