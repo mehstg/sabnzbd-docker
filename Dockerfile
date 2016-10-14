@@ -30,7 +30,7 @@ python /root/yenc-0.3/setup.py build && \
 python /root/yenc-0.3/setup.py install && \
 
 # Cloning sabnzbd 
-git clone -b master --depth 1 https://github.com/sabnzbd/sabnzbd /opt/sabnzbd && \
+git clone -b 1.1.0 --depth 1 https://github.com/sabnzbd/sabnzbd /opt/sabnzbd && \
 # Removing all software installed in order to compile par2 
 apk del .build-deps && \
 # Removing all download and package cache 
@@ -38,7 +38,8 @@ rm -rf /var/cache/apk/* && \
 rm -rf /root/par2cmdline && \
 rm /root/pip.py && \
 rm /root/yenc-0.3.tar.gz && \
-rm -rf /root/yenc-0.3
+rm -rf /root/yenc-0.3 && \
+rm -rf /opt/sabnzbd/.git
 
 EXPOSE 8080
 
